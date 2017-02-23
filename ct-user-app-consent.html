@@ -88,6 +88,8 @@ User app consent form
         next: String
       },
 
+
+
       ready: function() {
         this._domainLogo = 'http://resource.centular.com/' + this.domainId + '/logo.jpg';
         this._appLogo = 'http://resource.centular.com/' + this.appId + '/logo.jpg';
@@ -107,9 +109,9 @@ User app consent form
         this.$.denyRequest.generateRequest();
       },
 
-      _handleResponse: function (detail) {
-        if (response.request.status !== 200) {
-          this.$.errorMessage.innerHTML = response.request.body;
+      _handleResponse: function (data) {
+        if (data.detail.status !== 200) {
+          this.$.errorMessage.innerHTML = "Oops! Something went wrong :(";
           this.$.errorMessage.hidden = false;
         } else {
           if (this.next) {
