@@ -1,0 +1,119 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="user-app-consent-style.html">
+
+<!--
+`ct-user-app-consent`
+User app consent form
+
+@demo demo/index.html 
+-->
+
+<dom-module id="ct-user-app-consent">
+  <template>
+    <style include="iron-flex iron-flex-alignment user-app-consent-style">
+      :host {
+        display: block;
+      }
+      div[title] {
+        text-align: center;
+      }
+      paper-material {
+        padding: 15px;
+        margin: 15px;
+        max-width: 340px;
+        max-height: 220px;
+      }
+      paper-button {
+        padding: 10px;
+        margin: 10px;
+      }
+      #errorMessage {
+        color: var(--google-red-500);
+      }
+    </style>
+
+    <iron-ajax
+            id="grantRequest"
+            method="POST"
+            url="/oauth/grant"
+            handle-as="json"
+            on-response="_handleResponse"
+            debounce-duration="300"></iron-ajax>
+
+    <iron-ajax
+            id="denyRequest"
+            method="POST"
+            url="/oauth/deny"
+            handle-as="json"
+            on-response="_handleResponse"
+            debounce-duration="300"></iron-ajax>
+
+    <div title>
+      <img class="domain-logo" src="[[ _domainLogo ]]" alt="[[ domainName ]]">
+      <p class="title">Application Permissions</p>
+    </div>
+
+    <div class="horizontal center-justified layout">
+      <paper-material class="box" elevation="1">
+        <div class="horizontal center-justified layout">
+          <img class="app-logo" src="[[ _appLogo ]]">
+        </div>
+        <p class="consent-paragraph">[[ appName ]] wants to access your [[ domainName ]] account</p>
+        <!--<h2>in the following way:</h2>
+        <paper-listbox>
+          <paper-item>Create, view, edit and delete everything that you can</paper-item>
+        </paper-listbox>-->
+        <div class="horizontal center-justified layout">
+          <paper-button id="btnAllow" class="allow-button" raised on-tap="_allow">Allow</paper-button>
+          <paper-button id="btnDeny" class="deny-button" raised on-tap="_deny">Deny</paper-button>
+        </div>
+        <p class="horizontal center-justified layout" id="errorMessage" hidden></p>
+      </paper-material>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'ct-user-app-consent',
+
+      properties: {
+        appId: String,
+        appName: String,
+        domainId: String,
+        domainName: String,
+        next: String
+      },
+
+      ready: function() {
+        this._domainLogo = 'http://resource.centular.com/' + this.domainId + '/logo.jpg';
+        this._appLogo = 'http://resource.centular.com/' + this.appId + '/logo.jpg';
+      },
+
+      _allow: function () {
+        this.$.btnAllow.disabled = true;
+        this.$.btnDeny.disabled = true;
+        this.$.grantRequest.set( 'params', { "appId": this.appId, "next": this.next });
+        this.$.grantRequest.generateRequest();
+      },
+
+      _deny: function () {
+        this.$.btnAllow.disabled = true;
+        this.$.btnDeny.disabled = true;
+        this.$.denyRequest.set( 'params', { "next": this.next });
+        this.$.denyRequest.generateRequest();
+      },
+
+      _handleResponse: function (detail) {
+        if (response.request.status !== 200) {
+          this.$.errorMessage.innerHTML = response.request.body;
+          this.$.errorMessage.hidden = false;
+        }
+      }
+    });
+  </script>
+</dom-module>
