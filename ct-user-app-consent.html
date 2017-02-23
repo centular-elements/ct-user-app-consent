@@ -31,7 +31,7 @@ User app consent form
         margin: 10px;
       }
       #errorMessage {
-        color: var(--google-red-500);
+        color: firebrick;
       }
     </style>
 
@@ -88,8 +88,6 @@ User app consent form
         next: String
       },
 
-
-
       ready: function() {
         this._domainLogo = 'http://resource.centular.com/' + this.domainId + '/logo.jpg';
         this._appLogo = 'http://resource.centular.com/' + this.appId + '/logo.jpg';
@@ -111,8 +109,10 @@ User app consent form
 
       _handleResponse: function (data) {
         if (data.detail.status !== 200) {
-          this.$.errorMessage.innerHTML = "Oops! Something went wrong :(";
+          this.$.errorMessage.innerHTML = "Oops! Something went wrong :(" + "[" + data.detail.status + "]";
           this.$.errorMessage.hidden = false;
+          this.$.btnAllow.disabled = false;
+          this.$.btnDeny.disabled = false;
         } else {
           if (this.next) {
             window.location = this.next;
