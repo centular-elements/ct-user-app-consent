@@ -111,6 +111,10 @@ User app consent form
         if (response.request.status !== 200) {
           this.$.errorMessage.innerHTML = response.request.body;
           this.$.errorMessage.hidden = false;
+        } else {
+          if (this.next) {
+            window.location = this.next;
+          }
         }
       }
     });
