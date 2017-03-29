@@ -96,14 +96,13 @@ User app consent form
       _allow: function () {
         this.$.btnAllow.disabled = true;
         this.$.btnDeny.disabled = true;
-        this.$.grantRequest.set( 'params', { "client_id": this.clientId, "next": this.next });
+        this.$.grantRequest.set( 'params', { "domain_id": this.domainId, "client_id": this.clientId });
         this.$.grantRequest.generateRequest();
       },
 
       _deny: function () {
         this.$.btnAllow.disabled = true;
         this.$.btnDeny.disabled = true;
-        this.$.denyRequest.set( 'params', { "next": this.next });
         this.$.denyRequest.generateRequest();
       },
 
